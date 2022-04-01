@@ -1,0 +1,3 @@
+20030921 code reorganisation, small bug fixings
+         added support for Variables x, y and z which can be defined via environment variables
+20030823 small syntax fixings and packaging
