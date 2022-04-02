@@ -108,7 +108,7 @@ Pot * Pot::ParsePot(char * &s ) {
         Bracket = new Term();
         Bracket->ParseTerm(s);
         if (strlen(s) > 0 && *s == ')') {
-    s++;
+          s++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
           exit(1);
@@ -194,9 +194,6 @@ Pot * Pot::ParsePot(char * &s ) {
           exit(1);
         }
         action = 'r';
-      } else {
-        std::cout << "Syntax error 0" << std::endl;
-        exit(1);
       }
     }
     if (strlen(s) > 4) {
@@ -244,9 +241,6 @@ Pot * Pot::ParsePot(char * &s ) {
           exit(1);
         }
         action = 'e';
-      } else {
-        std::cout << "Syntax error" << std::endl;
-        exit(1);
       }
     }
     break;
