@@ -1,4 +1,6 @@
 /*
+ * $Id: parsetemr.hpp,v 1.5 2004/01/20 19:54:33 ulrich Exp $
+ * Copyright (C) Ulrich Schwickerath
  *  This file is part of lcal, a command line calculator 
  *  Author: Ulrich Schwickerath, (C) 12/2000 CERN
  *          ulrich.schwickerath@web.de
@@ -8,74 +10,73 @@
  *
  */
 
-#ifndef PARSETERM
-#define PARSETERM
-#include <iostream>
+#ifndef INCLUDE_PARSETERM_HPP_
+#define INCLUDE_PARSETERM_HPP_
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
-#include "Nodes"
+#include <iostream>
+#include "./nodes.hpp"
 
 class Term;
 
 class Pot {
  public:
-    Term * Klammer;
-    Pot * Potenz;
-    char  VName;
-    double Konstante;
-    Pot();
-    Pot(char * &s);
-    ~Pot();
-    Pot * ParsePot(char * &s );
-    void print();
-    double value();
-    int isconst();
+  Term * Bracket;
+  Pot * Potenz;
+  char  VName;
+  double Constant;
+  Pot();
+  explicit Pot(const char * s);
+  ~Pot();
+  Pot * ParsePot(const char * s);
+  void print();
+  double value();
+  int isconst();
  private:
-    char action;
+  char action;
 };
 
-class Fak {
+class Fac {
  public:
-    ListOf <Pot> * Faktoren;
-    Fak();
-    Fak(char * &s);
-    ~Fak();
-    Fak * ParseFak(char * &s);
-    void print();
-    double value();
-    int ispot();
-    int isconst();
+  ListOf <Pot> * Factors;
+  Fac();
+  explicit Fac(const char * s);
+  ~Fac();
+  Fac * ParseFac(const char * s);
+  void print();
+  double value();
+  int ispot();
+  int isconst();
 };
 
 class Sum {
  public:
-    ListOf <Fak> * Summanden;
-    Sum();
-    Sum(char * &s);
-    ~Sum();
-    Sum * ParseSum(char * &s);
-    void print();
-    double value();
-    int ispot();
-    int isfak();
-    int isconst();
+  ListOf <Fac> * Summanden;
+  Sum();
+  explicit Sum(const char * s);
+  ~Sum();
+  Sum * ParseSum(const char * s);
+  void print();
+  double value();
+  int ispot();
+  int isfak();
+  int isconst();
 };
 
 class Term {
  public:
-    ListOf <Sum> * Terme;
-    Term();
-    Term(char * &s);
-    ~Term();
-    Term * ParseTerm(char * &s);
-    void print();
-    double value();
-    int ispot();
-    int isfak();
-    int issum();
-    int isconst();
+  ListOf <Sum> * Terme;
+  Term();
+  explicit Term(const char * s);
+  ~Term();
+  Term * ParseTerm(const char * s);
+  void print();
+  double value();
+  int ispot();
+  int isfak();
+  int issum();
+  int isconst();
 };
 
-
-#endif
+#endif  // INCLUDE_PARSETERM_HPP_

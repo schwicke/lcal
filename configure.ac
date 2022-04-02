@@ -1,5 +1,5 @@
 AC_INIT([lcal], [0.01])
-AC_CONFIG_SRCDIR([src/lcal.C])
+AC_CONFIG_SRCDIR([src/lcal.cpp])
 AM_INIT_AUTOMAKE
 CFLAGS="$CFLAGS -Wall -Werr -O2 -Wno-deprecated"
 AC_PROG_CXX
