@@ -39,11 +39,13 @@ int main(int narg, char *argv[]) {
     if ( narg > 1 ) {
       char *s = argv[1];
       Term *t = new Term (s);
-      std::cout << t->value() << std::endl;
-      if ( t->isconst() ) {
-        std::cout << "Expression was not numeric" << std::endl;
+      if (t != NULL){
+        std::cout << t->value() << std::endl;
+        delete(t);
+        return(0);
+      } else {
+         std::cerr << "Something went wrong." << std::endl;
       }
-      //t->print();std::cout <<std::endl;
-      delete(t);
     }
+    return(1);
 }

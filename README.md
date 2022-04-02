@@ -22,4 +22,8 @@ bash> lcal "4*atan(1.0)"
 
 bash> lcal "log(e)"
 1
+
+bash> lcal '2^(1/2)'
+1.41421
+
 ```

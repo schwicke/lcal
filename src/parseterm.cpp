@@ -111,6 +111,7 @@ Pot * Pot::ParsePot(char * &s ) {
     s++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
+          exit(1);
         }
         action = 'l';
       }
@@ -124,6 +125,7 @@ Pot * Pot::ParsePot(char * &s ) {
           s++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
+          exit(1);
         }
         action = 'a';
       } else if ( !strncmp("asin(", s, 5) ) {
@@ -133,7 +135,8 @@ Pot * Pot::ParsePot(char * &s ) {
         if (strlen(s) > 0 && *s == ')') {
           s++;
         } else {
-    std::cout << "no matching closing Bracket found" << std::endl;
+          std::cout << "no matching closing Bracket found" << std::endl;
+          exit(1);
         }
         action = '1';
       } else if ( !strncmp("acos(", s, 5) ) {
@@ -144,6 +147,7 @@ Pot * Pot::ParsePot(char * &s ) {
           s++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
+          exit(1);
         }
         action = '2';
       } else if ( !strncmp("sinh(", s, 5) ) {
@@ -154,6 +158,7 @@ Pot * Pot::ParsePot(char * &s ) {
           s++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
+          exit(1);
         }
         action = '3';
       } else if ( !strncmp("cosh(", s, 5) ) {
@@ -164,6 +169,7 @@ Pot * Pot::ParsePot(char * &s ) {
           s++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
+          exit(1);
         }
         action = '4';
       } else if ( !strncmp("tanh(", s, 5) ) {
@@ -174,6 +180,7 @@ Pot * Pot::ParsePot(char * &s ) {
           s++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
+          exit(1);
         }
         action = '5';
       } else if ( !strncmp("sqrt(", s, 5) ) {
@@ -184,8 +191,12 @@ Pot * Pot::ParsePot(char * &s ) {
           s++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
+          exit(1);
         }
         action = 'r';
+      } else {
+        std::cout << "Syntax error" << std::endl;
+        exit(1);
       }
     }
     if (strlen(s) > 4) {
@@ -197,6 +208,7 @@ Pot * Pot::ParsePot(char * &s ) {
           s++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
+          exit(1);
         }
         action = 's';
       } else if ( !strncmp("cos(", s, 4) ) {
@@ -207,6 +219,7 @@ Pot * Pot::ParsePot(char * &s ) {
           s++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
+          exit(1);
         }
         action = 'o';
       } else if ( !strncmp("tan(", s, 4) ) {
@@ -217,6 +230,7 @@ Pot * Pot::ParsePot(char * &s ) {
           s++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
+          exit(1);
         }
         action = 't';
       } else if ( !strncmp("log(", s, 4) ) {
@@ -227,14 +241,22 @@ Pot * Pot::ParsePot(char * &s ) {
           s++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
+          exit(1);
         }
         action = 'e';
+      } else {
+        std::cout << "Syntax error" << std::endl;
+        exit(1);
       }
+    } else {
+      std::cout << "Syntax error" << std::endl;
+      exit(1);
     }
     break;
 
   default:
     std::cout << "Syntax error" << std::endl;
+    exit(1);
   }
   return this;
 }
@@ -327,9 +349,11 @@ double Pot::value() {
     VValue = getenv(&VName);
     if (VValue != NULL) {
       Term *t = new Term(VValue);
-      return(t->value());
+      result = t->value();
+      delete(t);
+      return(result);
     } else {
-      std::cout << "unknown variable" << std::endl;
+      std::cout << "Variable " << VName << " is not defined. Assuming 0" << std::endl;
       return(0.0);
     }
     break;
