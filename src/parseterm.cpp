@@ -195,7 +195,7 @@ Pot * Pot::ParsePot(char * &s ) {
         }
         action = 'r';
       } else {
-        std::cout << "Syntax error" << std::endl;
+        std::cout << "Syntax error 0" << std::endl;
         exit(1);
       }
     }
@@ -248,9 +248,6 @@ Pot * Pot::ParsePot(char * &s ) {
         std::cout << "Syntax error" << std::endl;
         exit(1);
       }
-    } else {
-      std::cout << "Syntax error" << std::endl;
-      exit(1);
     }
     break;
 
@@ -353,7 +350,8 @@ double Pot::value() {
       delete(t);
       return(result);
     } else {
-      std::cout << "Variable " << VName << " is not defined. Assuming 0" << std::endl;
+      std::cout << "Variable "
+       << VName << " is not defined. Assuming 0" << std::endl;
       return(0.0);
     }
     break;

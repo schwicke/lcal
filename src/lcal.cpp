@@ -39,7 +39,7 @@ int main(int narg, char *argv[]) {
     if ( narg > 1 ) {
       char *s = argv[1];
       Term *t = new Term (s);
-      if (t != NULL){
+      if (t != NULL) {
         std::cout << t->value() << std::endl;
         delete(t);
         return(0);
