@@ -27,9 +27,9 @@ class Pot {
   char  VName;
   double Constant;
   Pot();
-  explicit Pot(const char * s);
+  explicit Pot(char * &s);
   ~Pot();
-  Pot * ParsePot(const char * s);
+  Pot * ParsePot(char * &s);
   void print();
   double value();
   int isconst();
@@ -41,9 +41,9 @@ class Fac {
  public:
   ListOf <Pot> * Factors;
   Fac();
-  explicit Fac(const char * s);
+  explicit Fac(char * &s);
   ~Fac();
-  Fac * ParseFac(const char * s);
+  Fac * ParseFac(char * &s);
   void print();
   double value();
   int ispot();
@@ -54,9 +54,9 @@ class Sum {
  public:
   ListOf <Fac> * Summanden;
   Sum();
-  explicit Sum(const char * s);
+  explicit Sum(char * &s);
   ~Sum();
-  Sum * ParseSum(const char * s);
+  Sum * ParseSum(char * &s);
   void print();
   double value();
   int ispot();
@@ -68,9 +68,9 @@ class Term {
  public:
   ListOf <Sum> * Terme;
   Term();
-  explicit Term(const char * s);
+  explicit Term(char * &s);
   ~Term();
-  Term * ParseTerm(const char * s);
+  Term * ParseTerm(char * &s);
   void print();
   double value();
   int ispot();

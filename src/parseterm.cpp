@@ -34,7 +34,7 @@ Pot::Pot() {
   Potenz = 0;
 }
 
-Pot::Pot(const char * s) {
+Pot::Pot(char * &s) {
   Bracket = 0;
   Potenz = 0;
   ParsePot(s);
@@ -47,7 +47,7 @@ Pot::~Pot() {
   Potenz = 0;
 }
 
-Pot * Pot::ParsePot(const char * s ) {
+Pot * Pot::ParsePot(char * &s ) {
   // constances
   switch (*s) {
   case '0':
@@ -63,7 +63,7 @@ Pot * Pot::ParsePot(const char * s ) {
   case 'e':
   case 'P':
     if (*s !='e' && *s !='P') {
-      Constant = strtod(s, NULL);
+      Constant = strtod(s, &s);
       action = 'c';
     } else if (*s == 'e') {
       if (strlen(s) <= 1 || strlen(s) > 1 && *(s+1) != 'x') {
@@ -433,14 +433,14 @@ int Pot::isconst() {
 Fac::Fac() {
   Factors = 0;
 }
-Fac::Fac(const char * s) {
+Fac::Fac(char * &s) {
   ParseFac(s);
 }
 Fac::~Fac() {
   delete(Factors);
   Factors = 0;
 }
-Fac * Fac::ParseFac(const char * s) {
+Fac * Fac::ParseFac(char * &s) {
   Pot * potenz = new Pot(s);
   Factors = new ListOf<Pot> (potenz);
   while (strlen(s) > 0 && *s == '^') {
@@ -498,14 +498,14 @@ int Fac::isconst() {
 Sum::Sum() {
   Summanden = 0;
 }
-Sum::Sum(const char * s) {
+Sum::Sum(char * &s) {
   ParseSum(s);
 }
 Sum::~Sum() {
   delete(Summanden);
   Summanden = 0;
 }
-Sum * Sum::ParseSum(const char * s) {
+Sum * Sum::ParseSum(char * &s) {
   Fac * faktor = new Fac(s);
   Summanden = new ListOf<Fac> (faktor);
   char action;
@@ -582,7 +582,7 @@ Term::Term() {
   Terme = 0;
 }
 
-Term::Term(const char * s) {
+Term::Term(char * &s) {
   ParseTerm(s);
 }
 
@@ -591,7 +591,7 @@ Term::~Term() {
   Terme = 0;
 }
 
-Term * Term::ParseTerm(const char * s) {
+Term * Term::ParseTerm(char * &s) {
   Sum * summand = new Sum(s);
   Terme = new ListOf<Sum> (summand);
   char action;

@@ -26,7 +26,7 @@ class Node {
     m_next = 0;
     action = ' ';
   }
-  explicit Node(T* elem) {
+  Node(T* elem) {
     m_elem = elem;
     m_next = 0;
     action = ' ';
@@ -64,7 +64,7 @@ class ListOf {
     m_current_node = 0;
     m_last_node = 0;
   }
-  explicit ListOf(T * new_element) {
+  ListOf(T * new_element) {
     m_first_node = new Node<T> (new_element);
     m_current_node = m_first_node;
     m_last_node = m_first_node;
