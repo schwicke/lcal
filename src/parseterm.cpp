@@ -611,11 +611,15 @@ Term * Term::ParseTerm(char * &s) {
   Sum * summand = new Sum(s);
   Terme = new ListOf<Sum> (summand);
   char action;
-  while (strlen(s) > 0 && (*s =='+'|| *s == '-')) {
+  while (strlen(s) > 0 && (*s =='+' || *s == '-')) {
     action = *s;
     s++;
     summand = new Sum(s);
     Terme->add_elem(summand, action);
+  }
+  if (strlen(s) > 0 && *s !='+' && *s != '-'){
+    std::cout << "Syntax error" << std::endl;
+    exit(1);
   }
   return(NULL);
 }
