@@ -28,16 +28,20 @@
 #include <iostream>
 #include "./parseterm.hpp"
 
+int remaining(const char *s, int* pos) {
+  return (strlen(s)-*pos);
+}
+
 // implementation of Pot
 Pot::Pot() {
   Bracket = 0;
   Potenz = 0;
 }
 
-Pot::Pot(char * &s) {
+Pot::Pot(const char * s, int* pos) {
   Bracket = 0;
   Potenz = 0;
-  ParsePot(s);
+  ParsePot(s, pos);
 }
 
 Pot::~Pot() {
@@ -47,9 +51,9 @@ Pot::~Pot() {
   Potenz = 0;
 }
 
-Pot * Pot::ParsePot(char * &s ) {
+Pot * Pot::ParsePot(const char* s, int* pos ) {
   // constances
-  switch (*s) {
+  switch (s[*pos]) {
   case '0':
   case '1':
   case '2':
@@ -62,53 +66,56 @@ Pot * Pot::ParsePot(char * &s ) {
   case '9':
   case 'e':
   case 'P':
-    if (*s !='e' && *s !='P') {
-      Constant = strtod(s, &s);
+    if (s[*pos] !='e' && s[*pos] !='P') {
+      const char * startpos = &s[*pos];
+      char * finalpos;
+      Constant = strtod(startpos, &finalpos);  // FIXME
+      *pos = *pos + finalpos-startpos;
       action = 'c';
-    } else if (*s == 'e') {
-      if (strlen(s) <= 1 || strlen(s) > 1 && *(s+1) != 'x') {
+    } else if (s[*pos] == 'e') {
+      if (remaining(s, pos) <= 1 || remaining(s, pos) > 1 && *(s+1) != 'x') {
         Constant = exp(1.);
-        s++;
+        (*pos)++;
         action = 'c';
       }
-    } else if (strlen(s) > 1 && *++s == 'i') {
+    } else if (remaining(s, pos) > 1 && *++s == 'i') {
       Constant = 4.*atan(1.);
       action = 'c';
-      s++;
+      (*pos)++;
     }
     break;
   case '(':
-    s++;
+    (*pos)++;
     Bracket = new Term();
-    Bracket->ParseTerm(s);
-    if (strlen(s) > 0 && *s == ')') {
-      s++;
+    Bracket->ParseTerm(s, pos);
+    if (remaining(s, pos) > 0 && s[*pos] == ')') {
+      (*pos)++;
     } else {
       std::cout << "no matching closing Bracket found" << std::endl;
     }
     action = '(';
     break;
   case '-': case '+':
-    action = *s;
-    s++;
+    action = s[*pos];
+    (*pos)++;
     Potenz = new Pot();
-    Potenz->ParsePot(s);
+    Potenz->ParsePot(s, pos);
     break;
   case 'x': case 'y': case 'z':
     // variables x, y, z
-    VName = *s;
+    VName = s[*pos];
     action = 'V';
-    s++;
+    (*pos)++;
     break;
   case 's': case 'c': case 't': case 'a': case 'l': case 'p':
     // function call
-    if ( strlen(s) > 6 ) {
+    if ( remaining(s, pos) > 6 ) {
       if ( !strncmp("log10(", s, 6) ) {
         s+=6;
         Bracket = new Term();
-        Bracket->ParseTerm(s);
-        if (strlen(s) > 0 && *s == ')') {
-          s++;
+        Bracket->ParseTerm(s, pos);
+        if (remaining(s, pos) > 0 && s[*pos] == ')') {
+          (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
           exit(1);
@@ -116,13 +123,13 @@ Pot * Pot::ParsePot(char * &s ) {
         action = 'l';
       }
     }
-    if (strlen(s) > 5) {
+    if (remaining(s, pos) > 5) {
       if (!strncmp("atan(", s, 5)) {
         s+=5;
         Bracket = new Term();
-        Bracket->ParseTerm(s);
-        if (strlen(s) > 0 && *s == ')') {
-          s++;
+        Bracket->ParseTerm(s, pos);
+        if (remaining(s, pos) > 0 && s[*pos] == ')') {
+          (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
           exit(1);
@@ -131,9 +138,9 @@ Pot * Pot::ParsePot(char * &s ) {
       } else if ( !strncmp("asin(", s, 5) ) {
         s+=5;
         Bracket = new Term();
-        Bracket->ParseTerm(s);
-        if (strlen(s) > 0 && *s == ')') {
-          s++;
+        Bracket->ParseTerm(s, pos);
+        if (remaining(s, pos) > 0 && s[*pos] == ')') {
+          (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
           exit(1);
@@ -142,9 +149,9 @@ Pot * Pot::ParsePot(char * &s ) {
       } else if ( !strncmp("acos(", s, 5) ) {
         s+=5;
         Bracket = new Term();
-        Bracket->ParseTerm(s);
-        if ( strlen(s) > 0 && *s == ')' ) {
-          s++;
+        Bracket->ParseTerm(s, pos);
+        if ( remaining(s, pos) > 0 && s[*pos] == ')' ) {
+          (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
           exit(1);
@@ -153,9 +160,9 @@ Pot * Pot::ParsePot(char * &s ) {
       } else if ( !strncmp("sinh(", s, 5) ) {
         s+=5;
         Bracket = new Term();
-        Bracket->ParseTerm(s);
-        if ( strlen(s) > 0 && *s == ')' ) {
-          s++;
+        Bracket->ParseTerm(s, pos);
+        if ( remaining(s, pos) > 0 && s[*pos] == ')' ) {
+          (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
           exit(1);
@@ -164,9 +171,9 @@ Pot * Pot::ParsePot(char * &s ) {
       } else if ( !strncmp("cosh(", s, 5) ) {
         s+=5;
         Bracket = new Term();
-        Bracket->ParseTerm(s);
-        if (strlen(s) > 0 && *s == ')') {
-          s++;
+        Bracket->ParseTerm(s, pos);
+        if (remaining(s, pos) > 0 && s[*pos] == ')') {
+          (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
           exit(1);
@@ -175,9 +182,9 @@ Pot * Pot::ParsePot(char * &s ) {
       } else if ( !strncmp("tanh(", s, 5) ) {
         s+=5;
         Bracket = new Term();
-        Bracket->ParseTerm(s);
-        if (strlen(s) > 0 && *s == ')') {
-          s++;
+        Bracket->ParseTerm(s, pos);
+        if (remaining(s, pos) > 0 && s[*pos] == ')') {
+          (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
           exit(1);
@@ -186,9 +193,9 @@ Pot * Pot::ParsePot(char * &s ) {
       } else if ( !strncmp("sqrt(", s, 5) ) {
         s+=5;
         Bracket = new Term();
-        Bracket->ParseTerm(s);
-        if ( strlen(s) > 0 && *s == ')' ) {
-          s++;
+        Bracket->ParseTerm(s, pos);
+        if ( remaining(s, pos) > 0 && s[*pos] == ')' ) {
+          (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
           exit(1);
@@ -196,13 +203,13 @@ Pot * Pot::ParsePot(char * &s ) {
         action = 'r';
       }
     }
-    if (strlen(s) > 4) {
+    if (remaining(s, pos) > 4) {
       if ( !strncmp("sin(", s, 4) ) {
         s+=4;
         Bracket = new Term();
-        Bracket->ParseTerm(s);
-        if (strlen(s) > 0 && *s == ')') {
-          s++;
+        Bracket->ParseTerm(s, pos);
+        if (remaining(s, pos) > 0 && s[*pos] == ')') {
+          (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
           exit(1);
@@ -211,9 +218,9 @@ Pot * Pot::ParsePot(char * &s ) {
       } else if ( !strncmp("cos(", s, 4) ) {
         s+=4;
         Bracket = new Term();
-        Bracket->ParseTerm(s);
-        if (strlen(s) > 0 && *s == ')') {
-          s++;
+        Bracket->ParseTerm(s, pos);
+        if (remaining(s, pos) > 0 && s[*pos] == ')') {
+          (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
           exit(1);
@@ -222,9 +229,9 @@ Pot * Pot::ParsePot(char * &s ) {
       } else if ( !strncmp("tan(", s, 4) ) {
         s+=4;
         Bracket = new Term();
-        Bracket->ParseTerm(s);
-        if (strlen(s) > 0 && *s == ')') {
-          s++;
+        Bracket->ParseTerm(s, pos);
+        if (remaining(s, pos) > 0 && s[*pos] == ')') {
+          (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
           exit(1);
@@ -233,9 +240,9 @@ Pot * Pot::ParsePot(char * &s ) {
       } else if ( !strncmp("log(", s, 4) ) {
         s+=4;
         Bracket = new Term();
-        Bracket->ParseTerm(s);
-        if (strlen(s) > 0 && *s == ')') {
-          s++;
+        Bracket->ParseTerm(s, pos);
+        if (remaining(s, pos) > 0 && s[*pos] == ')') {
+          (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
           exit(1);
@@ -274,7 +281,8 @@ void Pot::print() {
     VValue = getenv(&VName);
     if (VValue != NULL) {
       std::cout << "(";
-      Term *t = new Term(VValue);
+      int pos = 0;
+      Term *t = new Term(VValue, &pos);
       t->print();
       std::cout << ")";
     } else {
@@ -339,7 +347,8 @@ double Pot::value() {
     result = 0.0;
     VValue = getenv(&VName);
     if (VValue != NULL) {
-      Term *t = new Term(VValue);
+      int pos = 0;
+      Term *t = new Term(VValue, &pos);
       result = t->value();
       delete(t);
       return(result);
@@ -449,19 +458,19 @@ int Pot::isconst() {
 Fac::Fac() {
   Factors = 0;
 }
-Fac::Fac(char * &s) {
-  ParseFac(s);
+Fac::Fac(const char * s, int* pos) {
+  ParseFac(s, pos);
 }
 Fac::~Fac() {
   delete(Factors);
   Factors = 0;
 }
-Fac * Fac::ParseFac(char * &s) {
-  Pot * potenz = new Pot(s);
+Fac * Fac::ParseFac(const char * s, int* pos) {
+  Pot * potenz = new Pot(s, pos);
   Factors = new ListOf<Pot> (potenz);
-  while (strlen(s) > 0 && *s == '^') {
-    s++;
-    potenz = new Pot(s);
+  while (remaining(s, pos) > 0 && s[*pos] == '^') {
+    (*pos)++;
+    potenz = new Pot(s, pos);
     Factors->add_elem(potenz, '^');
   }
   return(NULL);
@@ -514,21 +523,21 @@ int Fac::isconst() {
 Sum::Sum() {
   Summanden = 0;
 }
-Sum::Sum(char * &s) {
-  ParseSum(s);
+Sum::Sum(const char * s, int* pos) {
+  ParseSum(s, pos);
 }
 Sum::~Sum() {
   delete(Summanden);
   Summanden = 0;
 }
-Sum * Sum::ParseSum(char * &s) {
-  Fac * faktor = new Fac(s);
+Sum * Sum::ParseSum(const char * s, int* pos) {
+  Fac * faktor = new Fac(s, pos);
   Summanden = new ListOf<Fac> (faktor);
   char action;
-  while (strlen(s) >0 && (*s == '*' || *s == '/')) {
-    action = *s;
-    s++;
-    faktor = new Fac(s);
+  while (remaining(s, pos) >0 && (s[*pos] == '*' || s[*pos] == '/')) {
+    action = s[*pos];
+    (*pos)++;
+    faktor = new Fac(s, pos);
     Summanden->add_elem(faktor, action);
   }
   return(NULL);
@@ -598,8 +607,8 @@ Term::Term() {
   Terme = 0;
 }
 
-Term::Term(char * &s) {
-  ParseTerm(s);
+Term::Term(const char * s, int* pos) {
+  ParseTerm(s, pos);
 }
 
 Term::~Term() {
@@ -607,17 +616,17 @@ Term::~Term() {
   Terme = 0;
 }
 
-Term * Term::ParseTerm(char * &s) {
-  Sum * summand = new Sum(s);
+Term * Term::ParseTerm(const char * s, int* pos) {
+  Sum * summand = new Sum(s, pos);
   Terme = new ListOf<Sum> (summand);
   char action;
-  while (strlen(s) > 0 && (*s =='+' || *s == '-')) {
-    action = *s;
-    s++;
-    summand = new Sum(s);
+  while (remaining(s, pos) > 0 && (s[*pos] =='+' || s[*pos] == '-')) {
+    action = s[*pos];
+    (*pos)++;
+    summand = new Sum(s, pos);
     Terme->add_elem(summand, action);
   }
-  if (strlen(s) > 0 && *s !='+' && *s != '-'){
+  if (remaining(s, pos) > 0 && s[*pos] !='+' && s[*pos] != '-') {
     std::cout << "Syntax error" << std::endl;
     exit(1);
   }

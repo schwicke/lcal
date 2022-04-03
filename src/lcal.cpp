@@ -38,7 +38,8 @@
 int main(int narg, char *argv[]) {
     if ( narg > 1 ) {
       char *s = argv[1];
-      Term *t = new Term (s);
+      int pos = 0;
+      Term *t = new Term (s, &pos);
       if (t != NULL) {
         std::cout << t->value() << std::endl;
         delete(t);

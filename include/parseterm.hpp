@@ -18,7 +18,7 @@
 #include <iostream>
 #include "./nodes.hpp"
 
-class Term;
+class Term;  // forward declaration
 
 class Pot {
  public:
@@ -27,9 +27,9 @@ class Pot {
   char  VName;
   double Constant;
   Pot();
-  explicit Pot(char * &s);
+  explicit Pot(const char * s, int* pos);
   ~Pot();
-  Pot * ParsePot(char * &s);
+  Pot * ParsePot(const char * s, int* pos);
   void print();
   double value();
   int isconst();
@@ -41,9 +41,9 @@ class Fac {
  public:
   ListOf <Pot> * Factors;
   Fac();
-  explicit Fac(char * &s);
+  explicit Fac(const char * s, int* pos);
   ~Fac();
-  Fac * ParseFac(char * &s);
+  Fac * ParseFac(const char * s, int* pos);
   void print();
   double value();
   int ispot();
@@ -54,9 +54,9 @@ class Sum {
  public:
   ListOf <Fac> * Summanden;
   Sum();
-  explicit Sum(char * &s);
+  explicit Sum(const char * s, int* pos);
   ~Sum();
-  Sum * ParseSum(char * &s);
+  Sum * ParseSum(const char * s, int* pos);
   void print();
   double value();
   int ispot();
@@ -68,9 +68,9 @@ class Term {
  public:
   ListOf <Sum> * Terme;
   Term();
-  explicit Term(char * &s);
+  explicit Term(const char * s, int* pos);
   ~Term();
-  Term * ParseTerm(char * &s);
+  Term * ParseTerm(const char * s, int* pos);
   void print();
   double value();
   int ispot();
