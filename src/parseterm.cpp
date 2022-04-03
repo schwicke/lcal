@@ -73,15 +73,15 @@ Pot * Pot::ParsePot(const char* s, int* pos ) {
       *pos = *pos + finalpos-startpos;
       action = 'c';
     } else if (s[*pos] == 'e') {
-      if (remaining(s, pos) <= 1 || remaining(s, pos) > 1 && *(s+1) != 'x') {
+      if (remaining(s, pos) <= 1 || remaining(s, pos) > 1 && s[*pos+1] != 'x') {
         Constant = exp(1.);
         (*pos)++;
         action = 'c';
       }
-    } else if (remaining(s, pos) > 1 && *++s == 'i') {
+    } else if (remaining(s, pos) > 1 && s[*pos+1] == 'i') {
       Constant = 4.*atan(1.);
       action = 'c';
-      (*pos)++;
+      (*pos) += 2;
     }
     break;
   case '(':
@@ -92,6 +92,7 @@ Pot * Pot::ParsePot(const char* s, int* pos ) {
       (*pos)++;
     } else {
       std::cout << "no matching closing Bracket found" << std::endl;
+      exit(2);
     }
     action = '(';
     break;
@@ -108,144 +109,147 @@ Pot * Pot::ParsePot(const char* s, int* pos ) {
     (*pos)++;
     break;
   case 's': case 'c': case 't': case 'a': case 'l': case 'p':
+    printf("function\n");
     // function call
     if ( remaining(s, pos) > 6 ) {
-      if ( !strncmp("log10(", s, 6) ) {
-        s+=6;
+      if ( !strncmp("log10(", s+*pos, 6) ) {
+        (*pos) += 6;
         Bracket = new Term();
         Bracket->ParseTerm(s, pos);
         if (remaining(s, pos) > 0 && s[*pos] == ')') {
           (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
-          exit(1);
+          exit(2);
         }
         action = 'l';
       }
     }
     if (remaining(s, pos) > 5) {
-      if (!strncmp("atan(", s, 5)) {
-        s+=5;
+      printf("found 5\n");
+      if (!strncmp("atan(", s+*pos, 5)) {
+        printf("found atan\n");
+        (*pos) += 5;
         Bracket = new Term();
         Bracket->ParseTerm(s, pos);
         if (remaining(s, pos) > 0 && s[*pos] == ')') {
           (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
-          exit(1);
+          exit(2);
         }
         action = 'a';
-      } else if ( !strncmp("asin(", s, 5) ) {
-        s+=5;
+      } else if ( !strncmp("asin(", s+*pos, 5) ) {
+        (*pos) += 5;
         Bracket = new Term();
         Bracket->ParseTerm(s, pos);
         if (remaining(s, pos) > 0 && s[*pos] == ')') {
           (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
-          exit(1);
+          exit(2);
         }
         action = '1';
-      } else if ( !strncmp("acos(", s, 5) ) {
-        s+=5;
+      } else if ( !strncmp("acos(", s+*pos, 5) ) {
+        (*pos) += 5;
         Bracket = new Term();
         Bracket->ParseTerm(s, pos);
         if ( remaining(s, pos) > 0 && s[*pos] == ')' ) {
           (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
-          exit(1);
+          exit(2);
         }
         action = '2';
-      } else if ( !strncmp("sinh(", s, 5) ) {
-        s+=5;
+      } else if ( !strncmp("sinh(", s+*pos, 5) ) {
+        (*pos) += 5;
         Bracket = new Term();
         Bracket->ParseTerm(s, pos);
         if ( remaining(s, pos) > 0 && s[*pos] == ')' ) {
           (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
-          exit(1);
+          exit(2);
         }
         action = '3';
-      } else if ( !strncmp("cosh(", s, 5) ) {
-        s+=5;
+      } else if ( !strncmp("cosh(", s+*pos, 5) ) {
+        (*pos) += 5;
         Bracket = new Term();
         Bracket->ParseTerm(s, pos);
         if (remaining(s, pos) > 0 && s[*pos] == ')') {
           (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
-          exit(1);
+          exit(2);
         }
         action = '4';
-      } else if ( !strncmp("tanh(", s, 5) ) {
-        s+=5;
+      } else if ( !strncmp("tanh(", s+*pos, 5) ) {
+        (*pos) += 5;
         Bracket = new Term();
         Bracket->ParseTerm(s, pos);
         if (remaining(s, pos) > 0 && s[*pos] == ')') {
           (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
-          exit(1);
+          exit(2);
         }
         action = '5';
-      } else if ( !strncmp("sqrt(", s, 5) ) {
-        s+=5;
+      } else if ( !strncmp("sqrt(", s+*pos, 5) ) {
+        (*pos) += 5;
         Bracket = new Term();
         Bracket->ParseTerm(s, pos);
         if ( remaining(s, pos) > 0 && s[*pos] == ')' ) {
           (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
-          exit(1);
+          exit(2);
         }
         action = 'r';
       }
     }
     if (remaining(s, pos) > 4) {
-      if ( !strncmp("sin(", s, 4) ) {
-        s+=4;
+      if ( !strncmp("sin(", s+*pos, 4) ) {
+        (*pos) += 4;
         Bracket = new Term();
         Bracket->ParseTerm(s, pos);
         if (remaining(s, pos) > 0 && s[*pos] == ')') {
           (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
-          exit(1);
+          exit(2);
         }
         action = 's';
-      } else if ( !strncmp("cos(", s, 4) ) {
-        s+=4;
+      } else if ( !strncmp("cos(", s+*pos, 4) ) {
+        (*pos) += 4;
         Bracket = new Term();
         Bracket->ParseTerm(s, pos);
         if (remaining(s, pos) > 0 && s[*pos] == ')') {
           (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
-          exit(1);
+          exit(2);
         }
         action = 'o';
-      } else if ( !strncmp("tan(", s, 4) ) {
-        s+=4;
+      } else if ( !strncmp("tan(", s+*pos, 4) ) {
+        (*pos) += 4;
         Bracket = new Term();
         Bracket->ParseTerm(s, pos);
         if (remaining(s, pos) > 0 && s[*pos] == ')') {
           (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
-          exit(1);
+          exit(2);
         }
         action = 't';
-      } else if ( !strncmp("log(", s, 4) ) {
-        s+=4;
+      } else if ( !strncmp("log(", s+*pos, 4) ) {
+        (*pos) += 4;
         Bracket = new Term();
         Bracket->ParseTerm(s, pos);
         if (remaining(s, pos) > 0 && s[*pos] == ')') {
           (*pos)++;
         } else {
           std::cout << "no matching closing Bracket found" << std::endl;
-          exit(1);
+          exit(2);
         }
         action = 'e';
       }
@@ -626,7 +630,10 @@ Term * Term::ParseTerm(const char * s, int* pos) {
     summand = new Sum(s, pos);
     Terme->add_elem(summand, action);
   }
-  if (remaining(s, pos) > 0 && s[*pos] !='+' && s[*pos] != '-') {
+  if (remaining(s, pos) > 0 &&
+      s[*pos] != '+' &&
+      s[*pos] != '-' &&
+      s[*pos] != ')') {
     std::cout << "Syntax error" << std::endl;
     exit(1);
   }
