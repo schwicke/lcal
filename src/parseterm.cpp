@@ -109,7 +109,6 @@ Pot * Pot::ParsePot(const char* s, int* pos ) {
     (*pos)++;
     break;
   case 's': case 'c': case 't': case 'a': case 'l': case 'p':
-    printf("function\n");
     // function call
     if ( remaining(s, pos) > 6 ) {
       if ( !strncmp("log10(", s+*pos, 6) ) {
@@ -126,9 +125,7 @@ Pot * Pot::ParsePot(const char* s, int* pos ) {
       }
     }
     if (remaining(s, pos) > 5) {
-      printf("found 5\n");
       if (!strncmp("atan(", s+*pos, 5)) {
-        printf("found atan\n");
         (*pos) += 5;
         Bracket = new Term();
         Bracket->ParseTerm(s, pos);
