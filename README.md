@@ -4,11 +4,10 @@
 
 ## Building
 ```bash
-autogen.sh
-./configure --prefix /path/to/where/it/should/be/installed
 make
-sudo make install
 ```
+This will create a distrib/lcal folder with the resulting executable.
+
 ## Usage
 On the command prompt type lcal, followed by the expression you want to evaluate. Note: some may characters need to be escaped, or put the whole expressions into quotes.
 

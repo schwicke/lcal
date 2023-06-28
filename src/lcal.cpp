@@ -41,8 +41,10 @@ int main(int narg, char *argv[]) {
       int pos = 0;
       Term *t = new Term (s, &pos);
       if (t != NULL) {
+#ifdef DEBUG
         t->print();
         std::cout << std::endl;
+#endif
         std::cout << t->value() << std::endl;
         delete(t);
         return(0);

@@ -1,3 +1,4 @@
+20230628 code reorganisation, move to cmake
 20220403 code improvements, cpplint fixes. Bump version to 0.01.
 20030921 code reorganisation, small bug fixings
          added support for Variables x, y and z which can be defined via environment variables
