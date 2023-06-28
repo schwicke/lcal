@@ -1,6 +1,6 @@
 /*
- * $Id: lcal.C,v 1.5 2004/01/20 19:54:33 ulrich Exp $
- * Copyright (C) Ulrich Schwickerath <ulrich dot Schwickerath at web dot de>
+ * $Id: parseterm.cpp,v 1.5 2004/01/20 19:54:33 ulrich Exp $
+ * Copyright (C) Ulrich Schwickerath
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,36 +19,15 @@
  * This code comes with absolutly no warranty!
  * it should not be used for production purposes whatsoever
  *
- * USAGE:
- * example:
- * lcal "4*atan(1)"
- *
- *  todo:
- *  -include support for variables
- *  -implement rules
- *  ...
  */
+
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
 
+#include <iostream>
 #include "./parseterm.hpp"
 
-
-int main(int narg, char *argv[]) {
-    if ( narg > 1 ) {
-      char *s = argv[1];
-      int pos = 0;
-      Term *t = new Term (s, &pos);
-      if (t != NULL) {
-        t->print();
-        std::cout << std::endl;
-        std::cout << t->value() << std::endl;
-        delete(t);
-        return(0);
-      } else {
-         std::cerr << "Something went wrong." << std::endl;
-      }
-    }
-    return(1);
+int remaining(const char *s, int* pos) {
+  return (strlen(s)-*pos);
 }
