@@ -246,6 +246,17 @@ Pot * Pot::ParsePot(const char* s, int* pos ) {
           exit(2);
         }
         action = 'e';
+      } else if ( !strncmp("abs(", s+*pos, 4) ) {
+        (*pos) += 4;
+        Bracket = new Term();
+        Bracket->ParseTerm(s, pos);
+        if (remaining(s, pos) > 0 && s[*pos] == ')') {
+          (*pos)++;
+        } else {
+          std::cout << "no matching closing Bracket found" << std::endl;
+          exit(2);
+        }
+        action = 'A';
       }
     }
     break;
@@ -323,6 +334,9 @@ void Pot::print() {
   case 'r':
     std::cout << "sqrt("; Bracket->print(); std::cout << ")";
     break;
+  case 'A':
+    std::cout << "abs("; Bracket->print(); std::cout << ")";
+    break;
   }
 }
 double Pot::value() {
@@ -391,6 +405,9 @@ double Pot::value() {
     break;
   case 'r':
     return sqrt(Bracket->value());
+    break;
+  case 'A':
+    return abs(Bracket->value());
     break;
   }
   return(0);
